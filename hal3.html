@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat with Ale Ale</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Quicksand:wght@500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --wa-bubble: #8b785f;
+      --wa-bubble-2: #7d6c56;
+      --wa-send: #d7bf8f;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Quicksand', sans-serif;
+      background: #d8ebfb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: min(860px, 98vw);
+      height: min(940px, 96vh);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 22px 60px rgba(82, 130, 170, 0.28);
+      background: #000;
+      position: relative;
+      display: grid;
+      grid-template-rows: 92px 1fr 88px 290px;
+    }
+
+    .topbar {
+      background: linear-gradient(to bottom, #5a5148, #534a42);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .back-box {
+      min-width: 84px;
+      height: 52px;
+      border-radius: 24px;
+      background: rgba(0,0,0,0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: white;
+      font-size: 26px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .back-arrow {
+      font-size: 52px;
+      line-height: 0.7;
+      margin-top: -4px;
+    }
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #d9d9d9;
+      flex-shrink: 0;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar.fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      background: #d8d8d8;
+    }
+
+    .contact-name {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .contact-status {
+      font-size: 16px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 4px;
+    }
+
+    .video-btn {
+      width: 70px;
+      height: 52px;
+      border-radius: 24px;
+      background: rgba(0,0,0,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.8);
+      font-size: 27px;
+      flex-shrink: 0;
+    }
+
+    .chat-area {
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 18px 18px 30px;
+      background:
+        repeating-linear-gradient(
+          to right,
+          #fff8cf 0 22px,
+          #f9c6d0 22px 27px,
+          #fff7dc 27px 42px,
+          #d9e9ba 42px 46px,
+          #fff8cf 46px 63px
+        );
+      scroll-behavior: smooth;
+    }
+
+    .chat-area::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-area::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.16);
+      border-radius: 99px;
+    }
+
+    .msg-row {
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .msg-row.right {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: min(650px, 88%);
+      padding: 16px 18px;
+      border-radius: 20px;
+      color: white;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
+
+    .bubble.left {
+      background: rgba(255,255,255,0.92);
+      color: #4d4d4d;
+      border-top-left-radius: 6px;
+    }
+
+    .bubble.right {
+      background: var(--wa-bubble);
+      border-top-right-radius: 6px;
+    }
+
+    .bubble.small-photo {
+      padding: 12px 18px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--wa-bubble-2);
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .bubble.small-photo:hover {
+      transform: scale(1.02);
+    }
+
+    .bubble.show {
+      display: flex;
+    }
+
+    .bubble-text {
+      font-size: 19px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    .bubble-time {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    .bubble.left .bubble-time {
+      color: rgba(90,90,90,0.8);
+    }
+
+    .photo-icon {
+      font-size: 26px;
+    }
+
+    .photo-label {
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .photo-stack {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.15);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.35s ease;
+    }
+
+    .photo-stack.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .photo-inner {
+      position: relative;
+      width: min(650px, 88vw);
+      height: min(500px, 70vh);
+    }
+
+    .polaroid {
+      position: absolute;
+      width: 250px;
+      height: 320px;
+      background: #f5f5f5;
+      border: 14px solid #f5f5f5;
+      border-bottom-width: 54px;
+      box-shadow: 0 16px 30px rgba(0,0,0,0.18);
+      overflow: hidden;
+      opacity: 0;
+      transition: 0.5s ease;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #fff;
+    }
+
+    .polaroid.one {
+      left: 80px;
+      top: 30px;
+      transform: scale(0.55) rotate(-14deg);
+    }
+
+    .polaroid.two {
+      right: 70px;
+      bottom: 20px;
+      transform: scale(0.55) rotate(12deg);
+    }
+
+    .photo-stack.show .polaroid {
+      opacity: 1;
+    }
+
+    .photo-stack.show .polaroid.one {
+      transform: scale(1) rotate(-14deg);
+    }
+
+    .photo-stack.show .polaroid.two {
+      transform: scale(1) rotate(12deg);
+      transition-delay: 0.12s;
+    }
+
+    .memories-label {
+      position: absolute;
+      left: 50%;
+      top: 41%;
+      transform: translateX(-50%) rotate(-7deg);
+      background: #e8d2b7;
+      color: #7b4b48;
+      font-family: 'Gaegu', cursive;
+      font-size: 24px;
+      padding: 6px 18px;
+      border: 2px solid #c49778;
+      z-index: 4;
+      box-shadow: 0 6px 12px rgba(80,60,50,0.15);
+      opacity: 0;
+      transition: 0.35s ease;
+      white-space: nowrap;
+    }
+
+    .choice-box {
+      position: absolute;
+      left: 50%;
+      top: 53%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 14px;
+      z-index: 5;
+      opacity: 0;
+      transition: 0.35s ease;
+    }
+
+    .choice-btn {
+      border: none;
+      font-family: 'Gaegu', cursive;
+      font-size: 24px;
+      padding: 8px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 7px 14px rgba(80,60,50,0.18);
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .yes-btn {
+      background: #d8ebfb;
+      color: #436d91;
+      border: 2px solid #ffffff;
+    }
+
+    .yes-btn:hover {
+      transform: scale(1.08) rotate(-2deg);
+    }
+
+    .no-btn {
+      background: #ffd7de;
+      color: #8b4b57;
+      border: 2px solid #ffffff;
+    }
+
+    .no-btn:hover {
+      transform: rotate(4deg);
+    }
+
+    .photo-stack.show .memories-label,
+    .photo-stack.show .choice-box {
+      opacity: 1;
+      transition-delay: 0.28s;
+    }
+
+    .close-photos {
+      position: absolute;
+      top: -4px;
+      right: 8px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      color: #6d5345;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      z-index: 6;
+    }
+
+    .input-bar {
+      background: #4a4748;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+    }
+
+    .plus-btn {
+      color: white;
+      font-size: 52px;
+      line-height: 1;
+      margin-top: -4px;
+      opacity: 0.88;
+      user-select: none;
+    }
+
+    .fake-input {
+      flex: 1;
+      height: 52px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      color: #f1f1f1;
+      font-size: 23px;
+      gap: 10px;
+    }
+
+    .fake-input .typed {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .emoji-btn {
+      color: rgba(255,255,255,0.78);
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .send-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: none;
+      background: var(--wa-send);
+      color: #1c1c1c;
+      font-size: 34px;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+      transition: 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: 3px;
+    }
+
+    .send-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .keyboard {
+      background: #1d1d1f;
+      padding: 14px 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .suggestions {
+      display: flex;
+      justify-content: space-around;
+      color: rgba(255,255,255,0.78);
+      font-size: 24px;
+      padding: 0 18px;
+      margin-bottom: 2px;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .key {
+      min-width: 68px;
+      height: 58px;
+      background: #4f4f52;
+      color: white;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,0.04);
+    }
+
+    .key.wide {
+      min-width: 104px;
+    }
+
+    .key.space {
+      min-width: 390px;
+    }
+
+    .key.dark {
+      background: #3e3e42;
+    }
+
+    .mic-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+      padding: 0 8px;
+      color: white;
+      font-size: 28px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 0;
+      }
+
+      .phone {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        grid-template-rows: 86px 1fr 82px 280px;
+      }
+
+      .topbar {
+        padding: 14px 14px;
+      }
+
+      .contact-name {
+        font-size: 25px;
+      }
+
+      .contact-status {
+        font-size: 14px;
+      }
+
+      .back-box {
+        min-width: 72px;
+        height: 48px;
+        font-size: 22px;
+      }
+
+      .avatar {
+        width: 54px;
+        height: 54px;
+      }
+
+      .bubble {
+        max-width: 93%;
+      }
+
+      .bubble-text {
+        font-size: 17px;
+      }
+
+      .fake-input {
+        font-size: 20px;
+      }
+
+      .key {
+        min-width: 48px;
+        height: 54px;
+        font-size: 22px;
+      }
+
+      .key.wide {
+        min-width: 78px;
+      }
+
+      .key.space {
+        min-width: 220px;
+      }
+
+      .suggestions {
+        font-size: 18px;
+      }
+
+      .polaroid {
+        width: 180px;
+        height: 235px;
+        border-width: 10px;
+        border-bottom-width: 40px;
+      }
+
+      .polaroid.one {
+        left: 20px;
+        top: 35px;
+      }
+
+      .polaroid.two {
+        right: 20px;
+        bottom: 30px;
+      }
+
+      .photo-inner {
+        width: min(360px, 92vw);
+        height: 360px;
+      }
+
+      .memories-label {
+        top: 43%;
+        font-size: 20px;
+      }
+
+      .choice-box {
+        top: 57%;
+      }
+
+      .choice-btn {
+        font-size: 20px;
+        padding: 7px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <div class="topbar">
+      <div class="top-left">
+        <div class="back-box" onclick="history.back()">
+          <span class="back-arrow">‹</span>
+          <span>262</span>
+        </div>
+
+        <div class="avatar fallback" id="avatarBox">🐰</div>
+
+        <div>
+          <div class="contact-name">ale ale 😘</div>
+          <div class="contact-status">You</div>
+        </div>
+      </div>
+
+      <div class="video-btn">📹 ˅</div>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="msg-row left">
+        <div class="bubble left">
+          <div class="bubble-text">mana ucapan w!</div>
+          <div class="bubble-time">11.02</div>
+        </div>
+      </div>
+
+      <div class="msg-row right" id="sentMessageRow" style="display:none;">
+        <div class="bubble right">
+          <div class="bubble-text" id="longMessageText"></div>
+          <div class="bubble-time">11.02 ✓✓</div>
+        </div>
+      </div>
+
+      <div class="msg-row right" id="photoRow" style="display:none;">
+        <div class="bubble small-photo right" id="photoBubble" onclick="openPhotos()">
+          <span class="photo-icon">🖼️</span>
+          <span class="photo-label">Photo</span>
+          <span style="margin-left:auto; font-size:14px; opacity:0.8;">11.03 ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <div class="plus-btn">+</div>
+
+      <div class="fake-input">
+        <div class="typed" id="typedText">iy iy sbr!</div>
+        <div class="emoji-btn">◔</div>
+      </div>
+
+      <button class="send-btn" onclick="sendDoa()">➤</button>
+    </div>
+
+    <div class="keyboard">
+      <div class="suggestions">
+        <span>aku</span>
+        <span>tapi</span>
+        <span>gw</span>
+      </div>
+
+      <div class="key-row">
+        <div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key">4</div><div class="key">5</div>
+        <div class="key">6</div><div class="key">7</div><div class="key">8</div><div class="key">9</div><div class="key">0</div>
+      </div>
+
+      <div class="key-row">
+        <div class="key">-</div><div class="key">/</div><div class="key">:</div><div class="key">;</div><div class="key">(</div>
+        <div class="key">)</div><div class="key">$</div><div class="key">&</div><div class="key">@</div><div class="key">"</div>
+      </div>
+
+      <div class="key-row">
+        <div class="key wide dark">#+=</div><div class="key">.</div><div class="key">,</div><div class="key">?</div>
+        <div class="key">!</div><div class="key">'</div><div class="key wide dark">⌫</div>
+      </div>
+
+      <div class="key-row">
+        <div class="key wide dark">ABC</div><div class="key wide dark">☺</div>
+        <div class="key space dark">space</div><div class="key wide dark">↩</div>
+      </div>
+
+      <div class="mic-row">
+        <div>🌐</div>
+        <div>🎤</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="photo-stack" id="photoStack">
+    <div class="photo-inner">
+      <button class="close-photos" onclick="closePhotos()">✕</button>
+
+      <div class="polaroid one">
+        <img src="foto1.jpg" alt="Foto 1">
+      </div>
+
+      <div class="polaroid two">
+        <img src="foto2.jpg" alt="Foto 2">
+      </div>
+
+      <div class="memories-label">terharu ga lu</div>
+
+      <div class="choice-box">
+        <button class="choice-btn yes-btn" onclick="goToHal4()">bangettt</button>
+        <button class="choice-btn no-btn" id="noBtn" onclick="shrinkNo()">ga</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const longDoaText = `30 doa dari gue buat lu
+1. semoga lu masuk surga
+2. semoga lu makin baik sm gue
+3. semoga lu g makin songong!
+4. semoga lu panjang umur
+5. semoga lu makin baik sm gue
+6. semoga lu sehat selalu
+7. semoga uang 100k lu itu diganti sm allah awokwkw
+8. semoga lu cepet cair (biar bs traktir w)
+9. semoga lu jadi diplomat
+10. jadi sarjana magister hi
+11. semoga satrio sayang sm lu terus
+12. semoga gue masuk surga dan sukses
+13. semoga lu syg gue trs
+14. semoga lu cinta tukang geser selalu
+15. semoga lu ga boros, ga implusif (klo sama w gpp)
+16. semoga lu sukses trs gue punya koneksi mantep gacor
+17. semoga makin funny bukan fana
+18. semoga upn makin jaya
+19. semoga lu makin bela negara partibera selalu
+20. semoga makin lincah (?) tiktokannya
+21. semoga bunda, ayah, uti, panji sehat selalu + rais gpp deh
+22. makin suka bersedekah (ke gue)
+23. semoga napsu lu makan bebek berkurang
+24. semoga lu ga gampang di hipnotis
+25. semoga happy selalu
+26. semoga lu jd dpr
+27. semoga bantal lu dingin
+28. semoga kos lu bersih selalu
+29. semoga lu punya banyak duit
+30. SEMOGA APA YG DISEMOGAKAN TERSEMOGAKANNN AAAMIIIIIINNNNNN`;
+
+    let alreadySent = false;
+    let noScale = 1;
+
+    function sendDoa() {
+      if (alreadySent) return;
+      alreadySent = true;
+
+      document.getElementById("longMessageText").textContent = longDoaText;
+      document.getElementById("sentMessageRow").style.display = "flex";
+      document.getElementById("typedText").textContent = "";
+
+      setTimeout(() => {
+        const photoRow = document.getElementById("photoRow");
+        const photoBubble = document.getElementById("photoBubble");
+        photoRow.style.display = "flex";
+        photoBubble.classList.add("show");
+        scrollChatBottom();
+      }, 350);
+
+      scrollChatBottom();
+    }
+
+    function openPhotos() {
+      document.getElementById("photoStack").classList.add("show");
+    }
+
+    function closePhotos() {
+      document.getElementById("photoStack").classList.remove("show");
+    }
+
+    function shrinkNo() {
+      const noBtn = document.getElementById("noBtn");
+      noScale -= 0.18;
+
+      if (noScale <= 0.15) {
+        noBtn.style.display = "none";
+        return;
+      }
+
+      noBtn.style.transform = `scale(${noScale}) rotate(${Math.random() * 18 - 9}deg)`;
+      noBtn.textContent = noScale < 0.55 ? "yakin?" : "ga";
+    }
+
+    function goToHal4() {
+      window.location.href = "hal4.html";
+    }
+
+    function scrollChatBottom() {
+      const chatArea = document.getElementById("chatArea");
+      setTimeout(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }, 80);
+    }
+
+    const avatarBox = document.getElementById("avatarBox");
+    const avatarImg = new Image();
+    avatarImg.src = "foto3.jpg";
+    avatarImg.onload = function () {
+      avatarBox.classList.remove("fallback");
+      avatarBox.innerHTML = `<img src="foto3.jpg" alt="ale ale">`;
+    };
+  </script>
+</body>
+</html>

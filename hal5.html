@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hadiah Terakhir</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Quicksand:wght@500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: 'Quicksand', sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 241, 168, 0.9), transparent 28%),
+        radial-gradient(circle at 85% 80%, rgba(255, 208, 220, 0.85), transparent 32%),
+        #d8ebfb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .page {
+      width: min(900px, 96vw);
+      height: min(760px, 94vh);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.35) 50%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.35) 50%, transparent 50%),
+        #fffaf0;
+      background-size: 70px 70px;
+      border: 6px solid white;
+      border-radius: 36px;
+      box-shadow: 0 26px 65px rgba(80, 120, 160, 0.26);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sticker {
+      position: absolute;
+      font-size: 48px;
+      animation: floaty 3s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .sticker.one { top: 28px; left: 34px; }
+    .sticker.two { top: 38px; right: 44px; animation-delay: .5s; }
+    .sticker.three { bottom: 42px; left: 44px; animation-delay: 1s; }
+    .sticker.four { bottom: 36px; right: 46px; animation-delay: 1.4s; }
+
+    @keyframes floaty {
+      0%,100% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-12px) rotate(5deg); }
+    }
+
+    .gift-stage {
+      position: relative;
+      z-index: 5;
+      transition: 0.5s ease;
+    }
+
+    .gift-stage.hide {
+      opacity: 0;
+      transform: scale(0.7);
+      pointer-events: none;
+    }
+
+    .title {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(38px, 7vw, 70px);
+      color: #4e7fa8;
+      text-shadow: 3px 3px 0 #fff1a8;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(22px, 4vw, 34px);
+      color: #8b6b4f;
+      margin-bottom: 22px;
+    }
+
+    .gift {
+      width: 240px;
+      height: 220px;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      animation: wiggleGift 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 18px 18px rgba(90, 100, 130, 0.22));
+    }
+
+    @keyframes wiggleGift {
+      0%,100% { transform: rotate(-3deg); }
+      50% { transform: rotate(4deg) translateY(-8px); }
+    }
+
+    .gift-lid {
+      width: 265px;
+      height: 62px;
+      background: #ef8d97;
+      border: 5px solid #b95d6c;
+      border-radius: 18px;
+      position: absolute;
+      left: 50%;
+      top: 24px;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+
+    .gift-box {
+      width: 220px;
+      height: 150px;
+      background: #fff1a8;
+      border: 5px solid #d8b94e;
+      border-radius: 18px 18px 26px 26px;
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      overflow: hidden;
+    }
+
+    .gift-box::before,
+    .gift-lid::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 100%;
+      background: #d8ebfb;
+      border-left: 4px solid #8fb8db;
+      border-right: 4px solid #8fb8db;
+    }
+
+    .ribbon {
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+      z-index: 4;
+      width: 120px;
+      height: 70px;
+    }
+
+    .ribbon::before,
+    .ribbon::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      width: 58px;
+      height: 48px;
+      background: #d8ebfb;
+      border: 5px solid #8fb8db;
+      border-radius: 50% 50% 10px 50%;
+    }
+
+    .ribbon::before {
+      left: 0;
+      transform: rotate(-25deg);
+    }
+
+    .ribbon::after {
+      right: 0;
+      transform: rotate(25deg) scaleX(-1);
+    }
+
+    .click-note {
+      margin-top: 24px;
+      display: inline-block;
+      background: #ffd0dc;
+      color: #8b4b57;
+      font-family: 'Gaegu', cursive;
+      font-size: 28px;
+      padding: 8px 22px;
+      border-radius: 999px;
+      border: 3px solid white;
+      box-shadow: 0 7px 0 rgba(200, 120, 140, 0.2);
+    }
+
+    .surprise {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.8);
+      transition: 0.55s ease;
+    }
+
+    .surprise.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .surprise-card {
+      width: min(660px, 92vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      background: rgba(255, 250, 240, 0.96);
+      border: 5px solid white;
+      border-radius: 34px;
+      padding: 30px 28px;
+      box-shadow: 0 22px 48px rgba(90, 120, 160, 0.24);
+      position: relative;
+    }
+
+    .surprise-card::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .surprise-card::-webkit-scrollbar-thumb {
+      background: #ffd0dc;
+      border-radius: 99px;
+    }
+
+    .cake-stage.hide {
+      display: none;
+    }
+
+    .cake-title {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(40px, 6vw, 70px);
+      color: #ef8d97;
+      text-shadow: 3px 3px 0 #fff1a8;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .cake-subtitle {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(24px, 4vw, 31px);
+      color: #7b5b48;
+      margin-bottom: 18px;
+    }
+
+    .cake-wrap {
+      width: 260px;
+      height: 250px;
+      margin: 0 auto 18px;
+      position: relative;
+      animation: cakeBob 2.1s ease-in-out infinite;
+    }
+
+    @keyframes cakeBob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .big-cake {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 120px;
+      background: #ffd0dc;
+      border: 5px solid #a24c5a;
+      border-radius: 28px 28px 38px 38px;
+      box-shadow:
+        inset 0 -16px 0 rgba(255, 152, 179, 0.45),
+        0 12px 0 #c96a78;
+    }
+
+    .big-cake::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 214px;
+      height: 42px;
+      background: #fff7ea;
+      border: 5px solid #a24c5a;
+      border-radius: 50%;
+      box-shadow: inset 0 -8px 0 #ffe5a8;
+    }
+
+    .big-cake::after {
+      content: "🍓 🍓 🍓";
+      position: absolute;
+      top: -46px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      letter-spacing: 4px;
+      z-index: 4;
+    }
+
+    .candle {
+      position: absolute;
+      left: 50%;
+      top: 24px;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 64px;
+      border: 2px solid #a24c5a;
+      border-radius: 8px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffffff,
+        #ffffff 6px,
+        #8ecae6 6px,
+        #8ecae6 12px
+      );
+      z-index: 5;
+    }
+
+    .flame {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 30px;
+      animation: fire 0.7s infinite alternate;
+      transition: 0.25s ease;
+    }
+
+    .flame.off {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.4);
+    }
+
+    .smoke {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 26px;
+      opacity: 0;
+      transition: 0.3s ease;
+    }
+
+    .smoke.show {
+      opacity: 1;
+      animation: smokeUp 1s ease forwards;
+    }
+
+    @keyframes fire {
+      from { transform: translateX(-50%) scale(1); }
+      to { transform: translateX(-50%) scale(1.14); }
+    }
+
+    @keyframes smokeUp {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0) scale(0.7);
+      }
+      30% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-26px) scale(1.15);
+      }
+    }
+
+    .blow-btn,
+    .hug-btn {
+      border: none;
+      font-family: 'Gaegu', cursive;
+      font-size: 30px;
+      padding: 10px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .blow-btn {
+      background: #8fb8db;
+      color: white;
+      box-shadow: 0 8px 0 #5f8fb7;
+    }
+
+    .blow-btn:active,
+    .hug-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #5f8fb7;
+    }
+
+    .after-blow {
+      margin-top: 12px;
+      font-family: 'Gaegu', cursive;
+      font-size: 30px;
+      color: #4e7fa8;
+      display: none;
+    }
+
+    .after-blow.show {
+      display: block;
+      animation: pop 0.4s ease;
+    }
+
+    .letter-stage {
+      display: none;
+      animation: slideUp 0.45s ease;
+    }
+
+    .letter-stage.show {
+      display: block;
+    }
+
+    .big-text {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(42px, 7vw, 76px);
+      color: #ef8d97;
+      text-shadow: 3px 3px 0 #fff1a8;
+      line-height: 0.95;
+      margin-bottom: 12px;
+    }
+
+    .letter-stage p {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(24px, 4vw, 32px);
+      color: #7b5b48;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+
+    .letter-box {
+      margin-top: 12px;
+      background: white;
+      border: 3px dashed #ef8d97;
+      border-radius: 26px;
+      padding: 20px 22px;
+    }
+
+    .letter-text {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(21px, 3.2vw, 28px);
+      color: #6c5848;
+      line-height: 1.22;
+      white-space: pre-line;
+      text-align: left;
+    }
+
+    .hug-btn {
+      background: #ef8d97;
+      color: white;
+      box-shadow: 0 8px 0 #c96a78;
+      margin-top: 18px;
+    }
+
+    .hug-btn:active {
+      box-shadow: 0 3px 0 #c96a78;
+    }
+
+    .hug-message {
+      margin-top: 14px;
+      font-family: 'Gaegu', cursive;
+      font-size: 32px;
+      color: #4e7fa8;
+      display: none;
+    }
+
+    .hug-message.show {
+      display: block;
+      animation: pop 0.4s ease;
+    }
+
+    .music-note {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: #d8ebfb;
+      color: #4e7fa8;
+      font-family: 'Gaegu', cursive;
+      font-size: 22px;
+      padding: 5px 16px;
+      border-radius: 999px;
+      border: 3px solid white;
+      display: none;
+      z-index: 20;
+    }
+
+    .music-note.show {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      top: -30px;
+      z-index: 50;
+      pointer-events: none;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .heart-float {
+      position: fixed;
+      bottom: -40px;
+      z-index: 60;
+      pointer-events: none;
+      animation: heartUp 3s ease-out forwards;
+      font-size: 30px;
+    }
+
+    @keyframes heartUp {
+      to {
+        transform: translateY(-105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+      }
+
+      .page {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+      }
+
+      .gift {
+        transform: scale(0.82);
+      }
+
+      .surprise-card {
+        padding: 26px 18px;
+      }
+
+      .sticker {
+        font-size: 34px;
+      }
+
+      .letter-text {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <audio id="bgMusic" loop>
+    <source src="thebeatles.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="page">
+    <div class="music-note" id="musicNote">music on ♫</div>
+
+    <div class="sticker one">🎀</div>
+    <div class="sticker two">⭐</div>
+    <div class="sticker three">🩵</div>
+    <div class="sticker four">🎂</div>
+
+    <div class="gift-stage" id="giftStage">
+      <h1 class="title">hadiah terakhir 🎁</h1>
+      <div class="subtitle">klik kadonya</div>
+
+      <div class="gift" onclick="openGift()">
+        <div class="ribbon"></div>
+        <div class="gift-lid"></div>
+        <div class="gift-box"></div>
+      </div>
+
+      <div class="click-note">special ini mah😋</div>
+    </div>
+
+    <div class="surprise" id="surprise">
+      <div class="surprise-card">
+
+        <div class="cake-stage" id="cakeStage">
+          <div class="cake-title">SURPRISEEEE!!</div>
+          <div class="cake-subtitle">make a wish le 🎂</div>
+
+          <div class="cake-wrap">
+            <div class="candle">
+              <div class="flame" id="flame">🔥</div>
+              <div class="smoke" id="smoke">☁️</div>
+            </div>
+            <div class="big-cake"></div>
+          </div>
+
+          <button class="blow-btn" id="blowBtn" onclick="blowCandle()">tiup lilin 💨</button>
+
+          <div class="after-blow" id="afterBlow">
+            yeayyy gue Aamiinkan semua wish lu....
+          </div>
+        </div>
+
+        <div class="letter-stage" id="letterStage">
+          <div class="big-text">for ale ale!!</div>
+          <p>love letter from happie</p>
+
+          <div class="letter-box">
+            <div class="letter-text">aleeeee selamatt ulangg tahunnn!!!!🥺🥺🥺
+
+my bby honey sweety udah 20 tahunn, gue bangga lu. skrg lu udh dewasa, udh kepala dua bentar lagi kepala tiga (prenk)🥺
+
+ya pokoknya gue doa doa yg baikk buat lu, w akan doakan lu selalu bahagia dan jd orang yg sukses nanti.
+
+MAKASIH UDAH JADI TEMEN GUE, MAKASIH UDH DATENG DI HIDUP GUEEE. apalah hidup gue tanpa lu, hanya sebatang sumpit gacoan.
+
+MAKASIH UDH SELALU DENGERIN GUE NGERTIIN GUE, JADI TEMPAT CURHAT GUEE, JADI PARTNER IN CRIME HAPPY SAD DAN SEMUANYAA.
+
+gue syg syg sygggg luuu bngttt😇😇😇 pokonya hbd, i love you mwah mwahh😘</div>
+          </div>
+
+          <button class="hug-btn" onclick="sendHug()">ILY</button>
+
+          <div class="hug-message" id="hugMessage">
+            virtual hug sent 🫂🩵
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let giftOpened = false;
+    let candleBlown = false;
+
+    function openGift() {
+      if (giftOpened) return;
+      giftOpened = true;
+
+      const music = document.getElementById("bgMusic");
+      music.volume = 0.55;
+
+      music.play().then(() => {
+        document.getElementById("musicNote").classList.add("show");
+      }).catch(() => {
+        console.log("musik belum bisa diputar otomatis");
+      });
+
+      document.getElementById("giftStage").classList.add("hide");
+
+      setTimeout(() => {
+        document.getElementById("surprise").classList.add("show");
+        makeConfetti();
+      }, 450);
+    }
+
+    function blowCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+
+      document.getElementById("flame").classList.add("off");
+      document.getElementById("smoke").classList.add("show");
+      document.getElementById("afterBlow").classList.add("show");
+      document.getElementById("blowBtn").style.display = "none";
+
+      makeConfetti();
+
+      setTimeout(() => {
+        document.getElementById("cakeStage").classList.add("hide");
+        document.getElementById("letterStage").classList.add("show");
+      }, 1400);
+    }
+
+    function sendHug() {
+      document.getElementById("hugMessage").classList.add("show");
+
+      for (let i = 0; i < 36; i++) {
+        setTimeout(createHeart, i * 55);
+      }
+    }
+
+    function makeConfetti() {
+      const items = ["🎉", "⭐", "🩵", "💛", "🎀", "♡", "🍓"];
+
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.innerHTML = items[Math.floor(Math.random() * items.length)];
+
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.fontSize = 18 + Math.random() * 24 + "px";
+        piece.style.animationDuration = 2.4 + Math.random() * 1.8 + "s";
+        piece.style.animationDelay = Math.random() * 0.35 + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(() => {
+          piece.remove();
+        }, 4800);
+      }
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart-float";
+
+      const hearts = ["🩵", "💛", "💗", "♡", "🫂"];
+      heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = 22 + Math.random() * 28 + "px";
+      heart.style.animationDuration = 2.4 + Math.random() * 1.3 + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 4200);
+    }
+  </script>
+</body>
+</html>

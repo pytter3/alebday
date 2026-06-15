@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Tiny Cake For You</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Quicksand:wght@500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: 'Quicksand', sans-serif;
+      background: #fffaf2;
+    }
+
+    .home {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(142, 187, 235, 0.45) 50%, transparent 50%),
+        linear-gradient(rgba(142, 187, 235, 0.45) 50%, transparent 50%);
+      background-size: 90px 90px;
+      background-color: #fffaf2;
+    }
+
+    .yellow-shape {
+      position: absolute;
+      top: 0;
+      right: -60px;
+      width: 38%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, rgba(255, 228, 115, 0.52) 50%, transparent 50%),
+        linear-gradient(rgba(255, 228, 115, 0.52) 50%, transparent 50%);
+      background-size: 90px 90px;
+      background-color: #fff8db;
+      border-top-left-radius: 220px;
+      border-bottom-left-radius: 220px;
+      z-index: 1;
+    }
+
+    .title {
+      position: absolute;
+      top: 6%;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      z-index: 20;
+      background: #fffaf0;
+      border: 4px solid #ffffff;
+      border-radius: 24px;
+      padding: 10px 26px;
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(34px, 6vw, 68px);
+      color: #4b9bc7;
+      text-shadow: 3px 3px 0 #ffe999;
+      box-shadow: 0 8px 0 rgba(130, 160, 190, 0.25);
+      white-space: nowrap;
+    }
+
+    .plate {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      width: 430px;
+      height: 430px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fffefb 0%, #fffefb 54%, #f0f0ec 69%, #fffefb 79%);
+      border: 8px solid #ef8d97;
+      box-shadow:
+        inset 0 0 24px rgba(100, 100, 100, 0.08),
+        0 18px 35px rgba(90, 90, 90, 0.18);
+      z-index: 8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cake-button {
+      width: 220px;
+      height: 220px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: 0.25s ease;
+      animation: floatCake 2.3s ease-in-out infinite;
+    }
+
+    .cake-button:hover {
+      transform: scale(1.07) rotate(-3deg);
+    }
+
+    .cake-button:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes floatCake {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .cake {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 175px;
+      height: 118px;
+      background: #ffd0dc;
+      border: 4px solid #a24c5a;
+      border-radius: 28px 28px 36px 36px;
+      box-shadow:
+        inset 0 -14px 0 rgba(255, 152, 179, 0.45),
+        0 12px 0 #c96a78;
+    }
+
+    .cake::before {
+      content: "";
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 190px;
+      height: 40px;
+      background: #fff7ea;
+      border: 4px solid #a24c5a;
+      border-radius: 50%;
+      box-shadow: inset 0 -8px 0 #ffe5a8;
+    }
+
+    .cake::after {
+      content: "🍓 🍓 🍓";
+      position: absolute;
+      top: -44px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      letter-spacing: 3px;
+      z-index: 4;
+    }
+
+    .candle {
+      position: absolute;
+      left: 50%;
+      top: -58px;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 55px;
+      border: 2px solid #a24c5a;
+      border-radius: 8px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffffff,
+        #ffffff 6px,
+        #8ecae6 6px,
+        #8ecae6 12px
+      );
+      z-index: 5;
+    }
+
+    .candle::before {
+      content: "🔥";
+      position: absolute;
+      top: -34px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      animation: fire 0.7s infinite alternate;
+    }
+
+    @keyframes fire {
+      from {
+        transform: translateX(-50%) scale(1);
+      }
+
+      to {
+        transform: translateX(-50%) scale(1.14);
+      }
+    }
+
+    .click-note {
+      position: absolute;
+      left: 50%;
+      top: 76%;
+      transform: translateX(-50%) rotate(-2deg);
+      z-index: 20;
+      background: #fff7c6;
+      color: #5e8fb2;
+      font-family: 'Gaegu', cursive;
+      font-size: 28px;
+      padding: 7px 20px;
+      box-shadow: 5px 5px 0 rgba(110, 130, 150, 0.2);
+      white-space: nowrap;
+    }
+
+    .sticker {
+      position: absolute;
+      z-index: 12;
+      user-select: none;
+      filter: drop-shadow(4px 6px 4px rgba(70, 70, 70, 0.18));
+      animation: wiggle 3s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% {
+        transform: rotate(var(--r));
+      }
+
+      50% {
+        transform: rotate(calc(var(--r) + 6deg)) translateY(-4px);
+      }
+    }
+
+    .button-flower {
+      left: 2%;
+      top: 3%;
+      font-size: 80px;
+      --r: 0deg;
+    }
+
+    .star-cluster {
+      left: 16%;
+      top: 10%;
+      font-size: 92px;
+      --r: -10deg;
+    }
+
+    .heart-top {
+      top: 8%;
+      left: 44%;
+      font-size: 62px;
+      --r: -8deg;
+    }
+
+    .bear {
+      top: 14%;
+      right: 18%;
+      font-size: 82px;
+      --r: 6deg;
+    }
+
+    .phone {
+      top: 12%;
+      right: 4%;
+      font-size: 120px;
+      --r: 4deg;
+    }
+
+    .bunny {
+      top: 42%;
+      right: 10%;
+      font-size: 92px;
+      --r: -4deg;
+    }
+
+    .ladybug {
+      top: 67%;
+      right: 15%;
+      font-size: 38px;
+      --r: 8deg;
+    }
+
+    .apple {
+      left: 5%;
+      bottom: 16%;
+      font-size: 110px;
+      --r: -6deg;
+    }
+
+    .little-doll {
+      left: 10%;
+      bottom: 9%;
+      font-size: 88px;
+      --r: 3deg;
+    }
+
+    .triple-bear {
+      right: 8%;
+      bottom: 7%;
+      font-size: 78px;
+      --r: -5deg;
+    }
+
+    .red-heart {
+      left: 38%;
+      bottom: 9%;
+      font-size: 70px;
+      --r: 0deg;
+    }
+
+    .star-left {
+      left: 7%;
+      top: 52%;
+      font-size: 52px;
+      --r: -7deg;
+    }
+
+    .envelopes {
+      left: 3%;
+      top: 26%;
+      font-size: 94px;
+      --r: -8deg;
+    }
+
+    .bottom-stars {
+      right: 5%;
+      bottom: 17%;
+      font-size: 82px;
+      --r: -6deg;
+    }
+
+    .note {
+      position: absolute;
+      z-index: 21;
+      background: #fffaf0;
+      color: #4b9bc7;
+      font-family: 'Gaegu', cursive;
+      font-size: 25px;
+      padding: 5px 15px;
+      box-shadow: 4px 4px 0 rgba(110, 130, 150, 0.2);
+      white-space: nowrap;
+    }
+
+    .note.one {
+      top: 20%;
+      left: 14%;
+      transform: rotate(-5deg);
+    }
+
+    .note.two {
+      top: 22%;
+      right: 12%;
+      transform: rotate(6deg);
+    }
+
+    .note.three {
+      bottom: 23%;
+      left: 13%;
+      transform: rotate(-7deg);
+    }
+
+    .float-item {
+      position: fixed;
+      bottom: -40px;
+      z-index: 999;
+      pointer-events: none;
+      animation: floatUp 5s linear forwards;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9999;
+      background: #fffaf0;
+      overflow: hidden;
+    }
+
+    .loading-bg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #fffaf0;
+      background-image:
+        linear-gradient(90deg, rgba(143, 184, 219, 0.48) 50%, transparent 50%),
+        linear-gradient(rgba(143, 184, 219, 0.48) 50%, transparent 50%);
+      background-size: 80px 80px;
+      animation: bgMove 2.5s linear infinite;
+    }
+
+    @keyframes bgMove {
+      from {
+        background-position: 0 0;
+      }
+
+      to {
+        background-position: 0 80px;
+      }
+    }
+
+    .yellow-floor {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 34%;
+      background-color: #fff1a8;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.85) 18%, transparent 19%);
+      background-size: 18px 18px;
+      border-top: 6px solid rgba(255, 255, 255, 0.8);
+      z-index: 2;
+    }
+
+    .cat-row {
+      position: absolute;
+      left: 50%;
+      top: 7%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(10px, 3vw, 34px);
+      z-index: 4;
+      animation: catsDown 3.4s ease-in-out forwards;
+    }
+
+    .cat-row span {
+      font-size: clamp(42px, 8vw, 82px);
+      filter: drop-shadow(3px 5px 3px rgba(70, 70, 70, 0.18));
+      animation: catBounce 0.8s ease-in-out infinite alternate;
+    }
+
+    .cat-row span:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .cat-row span:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .cat-row span:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .cat-row span:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+
+    .cat-row span:nth-child(6) {
+      animation-delay: 0.5s;
+    }
+
+    @keyframes catsDown {
+      from {
+        top: 7%;
+      }
+
+      to {
+        top: 55%;
+      }
+    }
+
+    @keyframes catBounce {
+      from {
+        transform: translateY(0) rotate(-3deg);
+      }
+
+      to {
+        transform: translateY(-10px) rotate(3deg);
+      }
+    }
+
+    .loading-box {
+      position: absolute;
+      left: 50%;
+      bottom: 10%;
+      transform: translateX(-50%);
+      width: min(420px, 82%);
+      z-index: 5;
+      text-align: center;
+    }
+
+    .loading-text {
+      font-family: 'Gaegu', cursive;
+      font-size: clamp(28px, 5vw, 44px);
+      color: #4b8fbd;
+      text-shadow: 2px 2px 0 #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .loading-bar {
+      width: 100%;
+      height: 25px;
+      background: #fffaf0;
+      border: 4px solid #8fb8db;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: 4px 5px 0 rgba(80, 120, 150, 0.2);
+    }
+
+    .loading-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #8ecae6, #fff1a8, #ef8d97);
+      border-radius: 999px;
+      transition: width 0.08s linear;
+    }
+
+    @media (max-width: 900px) {
+      .yellow-shape {
+        width: 42%;
+      }
+
+      .plate {
+        width: 320px;
+        height: 320px;
+      }
+
+      .cake-button {
+        transform: scale(0.78);
+      }
+
+      .title {
+        font-size: 40px;
+      }
+
+      .click-note {
+        font-size: 22px;
+        top: 74%;
+      }
+
+      .phone {
+        font-size: 88px;
+      }
+
+      .bunny {
+        font-size: 72px;
+      }
+
+      .bear {
+        font-size: 65px;
+      }
+
+      .apple {
+        font-size: 85px;
+      }
+
+      .little-doll {
+        font-size: 68px;
+      }
+
+      .triple-bear {
+        font-size: 60px;
+      }
+
+      .envelopes {
+        font-size: 72px;
+      }
+
+      .star-cluster,
+      .bottom-stars {
+        font-size: 68px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .yellow-shape {
+        width: 48%;
+        border-top-left-radius: 150px;
+        border-bottom-left-radius: 150px;
+      }
+
+      .plate {
+        width: 260px;
+        height: 260px;
+      }
+
+      .title {
+        font-size: 32px;
+        top: 8%;
+      }
+
+      .click-note {
+        font-size: 18px;
+        padding: 6px 14px;
+        top: 73%;
+      }
+
+      .cake-button {
+        transform: scale(0.67);
+      }
+
+      .note {
+        font-size: 18px;
+      }
+
+      .phone {
+        font-size: 70px;
+        right: 1%;
+      }
+
+      .bunny {
+        font-size: 58px;
+        right: 4%;
+      }
+
+      .bear {
+        font-size: 55px;
+        right: 16%;
+      }
+
+      .apple {
+        font-size: 72px;
+      }
+
+      .little-doll {
+        font-size: 56px;
+      }
+
+      .triple-bear {
+        font-size: 52px;
+      }
+
+      .heart-top,
+      .red-heart {
+        font-size: 48px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="home">
+    <div class="yellow-shape"></div>
+
+    <h1 class="title">a tiny cake for you 🩵</h1>
+
+    <div class="sticker button-flower">🌼</div>
+    <div class="sticker star-cluster">⭐</div>
+    <div class="sticker heart-top">💗</div>
+    <div class="sticker bear">🧸</div>
+    <div class="sticker phone">☎️</div>
+    <div class="sticker bunny">🐰</div>
+    <div class="sticker ladybug">🐞</div>
+    <div class="sticker envelopes">✉️</div>
+    <div class="sticker star-left">⭐</div>
+    <div class="sticker apple">🍎</div>
+    <div class="sticker little-doll">🧶</div>
+    <div class="sticker red-heart">❤️</div>
+    <div class="sticker triple-bear">🐻‍❄️</div>
+    <div class="sticker bottom-stars">⭐</div>
+
+    <div class="note one">made with love</div>
+    <div class="note two">press the cake!</div>
+    <div class="note three">for my sweetie ♡</div>
+
+    <div class="plate">
+      <button class="cake-button" onclick="goToHal2()" aria-label="Open birthday surprise">
+        <div class="cake">
+          <div class="candle"></div>
+        </div>
+      </button>
+    </div>
+
+    <div class="click-note">click the cake to open your surprise ♡</div>
+  </div>
+
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-bg">
+      <div class="cat-row">
+        <span>🐈‍⬛</span>
+        <span>🐱</span>
+        <span>😺</span>
+        <span>😽</span>
+        <span>🐈</span>
+        <span>😸</span>
+      </div>
+
+      <div class="yellow-floor"></div>
+
+      <div class="loading-box">
+        <div class="loading-text">loading... <span id="loadingPercent">0%</span></div>
+        <div class="loading-bar">
+          <div class="loading-fill" id="loadingFill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goToHal2() {
+      const loadingScreen = document.getElementById("loadingScreen");
+      const loadingFill = document.getElementById("loadingFill");
+      const loadingPercent = document.getElementById("loadingPercent");
+
+      loadingScreen.style.display = "block";
+
+      let progress = 0;
+
+      const loadingInterval = setInterval(() => {
+        progress++;
+
+        loadingFill.style.width = progress + "%";
+        loadingPercent.textContent = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(loadingInterval);
+
+          setTimeout(() => {
+            window.location.href = "hal2.html";
+          }, 450);
+        }
+      }, 32);
+    }
+
+    function createFloatingItem() {
+      const item = document.createElement("div");
+      item.className = "float-item";
+
+      const symbols = ["♡", "♥", "🍓", "⭐", "🩵", "💛"];
+      item.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+
+      item.style.left = Math.random() * 100 + "vw";
+      item.style.fontSize = 18 + Math.random() * 24 + "px";
+      item.style.color = Math.random() > 0.5 ? "#4b9bc7" : "#ef8d97";
+      item.style.animationDuration = 3 + Math.random() * 2 + "s";
+
+      document.body.appendChild(item);
+
+      setTimeout(() => {
+        item.remove();
+      }, 5000);
+    }
+
+    setInterval(createFloatingItem, 950);
+  </script>
+</body>
+</html>
